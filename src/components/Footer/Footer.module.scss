@@ -1,0 +1,14 @@
+$item-color: #2196f3;
+
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $item-color;
+  width: 502px;
+  height: 50px;
+  border-radius: 5px;
+  margin-left: 350px;
+  color: #fff;
+  text-transform: uppercase;
+}
