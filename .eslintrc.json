@@ -15,6 +15,7 @@
     "indent": ["error", 2],
     "linebreak-style": [0, "unix"],
     "react/react-in-jsx-scope": "off",
+    "no-param-reassign": "off",
     "react/prop-types": 0,
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
