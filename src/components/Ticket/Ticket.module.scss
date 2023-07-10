@@ -29,10 +29,12 @@ $bl-color: #4a4a4a;
 .section {
   display: flex;
   justify-content: space-between;
+  gap: 20%;
 
   &__container {
     display: flex;
     flex-direction: column;
+    flex: 1;
   }
   &__hight {
     color: $grey-color;

@@ -1,4 +1,33 @@
-import { createSlice } from '@reduxjs/toolkit'
+/* eslint-disable consistent-return */
+/* eslint-disable func-names */
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+
+function generateRandomId() {
+  const randomNumber = Math.random() * 10
+  return randomNumber.toString()
+}
+
+// eslint-disable-next-line prefer-arrow-callback
+export const fetchTickets = createAsyncThunk('aviaSales/fetchaviaSales', async function (_, { rejectWithValue }) {
+  try {
+    const idURL = 'https://aviasales-test-api.kata.academy/search'
+    const responseId = await fetch(idURL)
+    if (!responseId.ok) {
+      throw new Error('Could not fetch')
+    }
+    const res = await responseId.json()
+    const resId = res.searchId
+    const ticletsURL = `https://aviasales-test-api.kata.academy/tickets?searchId=${resId}`
+    const responseTicket = await fetch(ticletsURL)
+    if (!responseTicket.ok) {
+      throw new Error('Could not fetch')
+    }
+    const tickets = await responseTicket.json()
+    return tickets
+  } catch (error) {
+    return rejectWithValue(error.message)
+  }
+})
 
 const aviaSlice = createSlice({
   name: 'aviaSales',
@@ -11,9 +40,13 @@ const aviaSlice = createSlice({
       { id: 4, text: '3 пересадки', checked: false },
     ],
     btns: [
-      { id: 0, text: 'самый дешёвый', active: false },
+      { id: 0, text: 'самый дешёвый', active: true },
       { id: 1, text: 'самый быстрый', active: false },
     ],
+    tickets: [],
+    status: null,
+    error: null,
+    count: 5,
   },
   reducers: {
     changeCheckedBoxes(state, action) {
@@ -53,6 +86,21 @@ const aviaSlice = createSlice({
           currentBtn.active = false
         }
       }
+    },
+  },
+
+  extraReducers: {
+    [fetchTickets.pending]: (state) => {
+      state.status = 'loading...'
+      state.error = null
+    },
+    [fetchTickets.fulfilled]: (state, action) => {
+      state.status = 'resolved'
+      state.tickets = action.payload.tickets.map((ticket) => ({ id: generateRandomId(), ticket }))
+    },
+    [fetchTickets.rejected]: (state, action) => {
+      state.status = 'rejected'
+      state.error = action.payload
     },
   },
 })
