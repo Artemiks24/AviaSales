@@ -2,6 +2,8 @@
 /* eslint-disable func-names */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
+import { ALLSTOPS, NOSTOPS, ONESTOPS, THREESOPS, TWOSTOPS } from '../components/TicketList/consts'
+
 function generateRandomId() {
   const randomNumber = Math.random() * 10
   return randomNumber.toString()
@@ -33,14 +35,14 @@ const aviaSlice = createSlice({
   name: 'aviaSales',
   initialState: {
     boxes: [
-      { id: 0, text: 'Все', checked: false },
-      { id: 1, text: 'Без пересадок', checked: false },
-      { id: 2, text: '1 пересадка', checked: false },
-      { id: 3, text: '2 пересадки', checked: false },
-      { id: 4, text: '3 пересадки', checked: false },
+      { id: 0, text: ALLSTOPS, checked: false },
+      { id: 1, text: NOSTOPS, checked: false, stops: 0 },
+      { id: 2, text: ONESTOPS, checked: false, stops: 1 },
+      { id: 3, text: TWOSTOPS, checked: false, stops: 2 },
+      { id: 4, text: THREESOPS, checked: false, stops: 3 },
     ],
     btns: [
-      { id: 0, text: 'самый дешёвый', active: true },
+      { id: 0, text: 'самый дешёвый', active: false },
       { id: 1, text: 'самый быстрый', active: false },
     ],
     tickets: [],
@@ -71,21 +73,29 @@ const aviaSlice = createSlice({
     },
     changeActiveBtns(state, action) {
       const { payload } = action
-      const currentBtn = state.btns.find((btn) => btn.id === payload)
 
-      if (currentBtn) {
-        if (!currentBtn.active) {
-          state.btns.forEach((btn) => {
-            if (btn.id === payload) {
-              btn.active = true
-            } else {
-              btn.active = false
-            }
-          })
+      state.btns.forEach((btn) => {
+        if (btn.id === payload) {
+          btn.active = true
         } else {
-          currentBtn.active = false
+          btn.active = false
         }
-      }
+        if (btn.text === 'самый дешёвый' && btn.active) {
+          state.tickets.sort((a, b) => a.ticket.price - b.ticket.price)
+        }
+
+        if (btn.text === 'самый быстрый' && btn.active) {
+          state.tickets.sort(
+            (a, b) =>
+              a.ticket.segments[0].duration +
+              a.ticket.segments[1].duration -
+              (b.ticket.segments[0].duration + b.ticket.segments[1].duration)
+          )
+        }
+      })
+    },
+    showMoreTickets(state) {
+      state.count += 5
     },
   },
 
@@ -105,6 +115,6 @@ const aviaSlice = createSlice({
   },
 })
 
-export const { changeCheckedBoxes, changeActiveBtns } = aviaSlice.actions
+export const { changeCheckedBoxes, changeActiveBtns, showMoreTickets } = aviaSlice.actions
 
 export default aviaSlice.reducer
