@@ -1,7 +1,6 @@
-/* eslint-disable consistent-return */
-/* eslint-disable func-names */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
+import fetchTicketsData from '../requests/requests'
 import { ALLSTOPS, NOSTOPS, ONESTOPS, THREESOPS, TWOSTOPS } from '../components/TicketList/consts'
 
 function generateRandomId() {
@@ -12,19 +11,7 @@ function generateRandomId() {
 // eslint-disable-next-line prefer-arrow-callback
 export const fetchTickets = createAsyncThunk('aviaSales/fetchaviaSales', async function (_, { rejectWithValue }) {
   try {
-    const idURL = 'https://aviasales-test-api.kata.academy/search'
-    const responseId = await fetch(idURL)
-    if (!responseId.ok) {
-      throw new Error('Could not fetch')
-    }
-    const res = await responseId.json()
-    const resId = res.searchId
-    const ticletsURL = `https://aviasales-test-api.kata.academy/tickets?searchId=${resId}`
-    const responseTicket = await fetch(ticletsURL)
-    if (!responseTicket.ok) {
-      throw new Error('Could not fetch')
-    }
-    const tickets = await responseTicket.json()
+    const tickets = await fetchTicketsData()
     return tickets
   } catch (error) {
     return rejectWithValue(error.message)
@@ -74,9 +61,10 @@ const aviaSlice = createSlice({
     changeActiveBtns(state, action) {
       const { payload } = action
 
+      // eslint-disable-next-line consistent-return
       state.btns.forEach((btn) => {
         if (btn.id === payload) {
-          btn.active = true
+          btn.active = !btn.active
         } else {
           btn.active = false
         }

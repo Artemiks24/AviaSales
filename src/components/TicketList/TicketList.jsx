@@ -17,18 +17,16 @@ export default function TicketList() {
   const boxes = useSelector((state) => state.boxes)
   const ticketList = useSelector((state) => state.tickets)
 
-  // eslint-disable-next-line consistent-return
   const filterTickets = () => {
-    const filteredBoxes = boxes.filter((checkbox) => checkbox.checked)
-    const currentFilters = filteredBoxes.map((checkbox) => checkbox.text)
-    if (!currentFilters) return []
-    if (currentFilters.find((box) => box === ALLSTOPS)) return ticketList
+    const checkedBoxes = boxes.filter((box) => box.checked)
+    if (!checkedBoxes) return []
+    if (checkedBoxes.find((box) => box.text === ALLSTOPS)) return ticketList
     if (ticketList) {
       return ticketList.filter((ticket) =>
         ticket.ticket.segments.some((seg) =>
           checkSearsh(
             seg.stops.length,
-            filteredBoxes.map((checkbox) => checkbox.stops)
+            checkedBoxes.map((box) => box.stops)
           )
         )
       )
