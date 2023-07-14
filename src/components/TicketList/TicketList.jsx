@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { useSelector } from 'react-redux'
-import { useEffect, useState } from 'react'
 import { Alert, Spin } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 
@@ -16,13 +15,6 @@ function checkSearsh(stops, filters) {
 
 export default function TicketList() {
   const { count, boxes, status } = useSelector((state) => state)
-  const [stop, setStop] = useState(false)
-
-  useEffect(() => {
-    setTimeout(() => {
-      setStop(true)
-    }, 4000)
-  }, [])
 
   // eslint-disable-next-line prefer-const
   let ticketList = useSelector((state) => state.tickets)
@@ -74,7 +66,7 @@ export default function TicketList() {
           showIcon
         />
       )}
-      {(status || stop === false) && (
+      {status && (
         <div className="сentered">
           <Spin indicator={antIcon} />
         </div>

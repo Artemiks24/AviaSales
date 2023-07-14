@@ -9,11 +9,12 @@ import Filter from './components/Filter'
 import TicketList from './components/TicketList/TicketList'
 
 export default function App() {
-  const { error } = useSelector((state) => state)
+  const { error, stop } = useSelector((state) => state)
   const dispatch = useDispatch()
+
   useEffect(() => {
     dispatch(fetchTickets())
-  }, [dispatch])
+  }, [dispatch, stop])
 
   if (error) {
     return <h2 className="сentered">ошибка: {error}, пожалуйста обновите страницу</h2>

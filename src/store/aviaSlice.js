@@ -13,6 +13,7 @@ function generateRandomId() {
 export const fetchTickets = createAsyncThunk('aviaSales/fetchaviaSales', async function (_, { rejectWithValue }) {
   try {
     const tickets = await fetchTicketsData()
+    console.log(tickets)
     return tickets
   } catch (error) {
     return rejectWithValue(error.message)
@@ -37,6 +38,7 @@ const aviaSlice = createSlice({
     status: null,
     error: null,
     count: 5,
+    stop: false,
   },
   reducers: {
     changeCheckedBoxes(state, action) {
@@ -92,8 +94,8 @@ const aviaSlice = createSlice({
       state.error = false
     },
     [fetchTickets.fulfilled]: (state, action) => {
-      state.status = false
       const localTickets = action.payload.tickets.map((ticket) => ({ id: generateRandomId(), ticket }))
+
       const cheapBtn = state.btns.find((btn) => btn.text === 'самый дешёвый' && btn.active === true)
       const fasterpBtn = state.btns.find((btn) => btn.text === 'самый быстрый' && btn.active === true)
       if (cheapBtn) {
@@ -108,14 +110,16 @@ const aviaSlice = createSlice({
         )
       }
 
-      if (!action.payload) {
-        state.isStop = !state.isStop
+      if (!action.payload.stop) {
+        state.stop = !state.stop
+      } else {
+        state.status = false
       }
     },
-    [fetchTickets.rejected]: (state, action) => {
+    [fetchTickets.rejected]: (state) => {
       state.status = true
-      state.error = action.payload
-      state.isStop = !state.isStop
+      state.error = true
+      state.stop = !state.stop
     },
   },
 })

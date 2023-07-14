@@ -1,23 +1,26 @@
-const fetchId = async () => {
-  const idURL = 'https://aviasales-test-api.kata.academy/search'
-  const responseId = await fetch(idURL)
-  if (!responseId.ok) {
-    throw new Error('Could not fetch')
-  }
-  const res = await responseId.json()
-  const resId = res.searchId
-  return resId
-}
+let id = ''
 
 const fetchTicketsData = async () => {
-  const resId = await fetchId()
-  const ticketsURL = `https://aviasales-test-api.kata.academy/tickets?searchId=${resId}`
-  const responseTicket = await fetch(ticketsURL)
-  if (!responseTicket.ok) {
-    throw new Error('Could not fetch')
+  const idURL = 'https://aviasales-test-api.kata.academy/search'
+
+  if (!id) {
+    const responseId = await fetch(idURL)
+    if (responseId.ok) {
+      const res = await responseId.json()
+      id = res.searchId
+    } else {
+      throw new Error(`Could not fetch ${idURL}`)
+    }
   }
-  const tickets = await responseTicket.json()
-  return tickets
+
+  const getTickets = `https://aviasales-test-api.kata.academy/tickets?searchId=${id}`
+
+  const responseTicket = await fetch(getTickets)
+  if (responseTicket.ok) {
+    const tickets = await responseTicket.json()
+    return tickets
+  }
+  throw new Error(`Could not fetch ${getTickets}`)
 }
 
 export default fetchTicketsData
