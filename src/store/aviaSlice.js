@@ -13,7 +13,6 @@ function generateRandomId() {
 export const fetchTickets = createAsyncThunk('aviaSales/fetchaviaSales', async function (_, { rejectWithValue }) {
   try {
     const tickets = await fetchTicketsData()
-    console.log(tickets)
     return tickets
   } catch (error) {
     return rejectWithValue(error.message)
