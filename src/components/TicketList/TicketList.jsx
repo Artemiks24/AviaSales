@@ -1,12 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { useSelector, useDispatch } from 'react-redux'
-import { useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import { useEffect, useState } from 'react'
 import { Alert, Spin } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 
 import Ticket from '../Ticket/Ticket'
 import Footer from '../Footer/Footer'
-import { startTimer, stopTimer } from '../../store/aviaSlice'
 
 import styles from './TicketList.module.scss'
 import { ALLSTOPS } from './consts'
@@ -16,17 +15,13 @@ function checkSearsh(stops, filters) {
 }
 
 export default function TicketList() {
-  const dispatch = useDispatch()
-  const { count, boxes, status, stop } = useSelector((state) => state)
+  const { count, boxes, status } = useSelector((state) => state)
+  const [stop, setStop] = useState(false)
 
   useEffect(() => {
-    dispatch(startTimer())
-
-    return () => {
-      setTimeout(() => {
-        dispatch(stopTimer())
-      }, 4000)
-    }
+    setTimeout(() => {
+      setStop(true)
+    }, 4000)
   }, [])
 
   // eslint-disable-next-line prefer-const
@@ -79,7 +74,7 @@ export default function TicketList() {
           showIcon
         />
       )}
-      {(status || stop) && (
+      {(status || stop === false) && (
         <div className="сentered">
           <Spin indicator={antIcon} />
         </div>

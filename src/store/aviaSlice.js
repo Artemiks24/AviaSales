@@ -37,15 +37,8 @@ const aviaSlice = createSlice({
     status: null,
     error: null,
     count: 5,
-    stop: false,
   },
   reducers: {
-    startTimer: (state) => {
-      state.stop = true
-    },
-    stopTimer: (state) => {
-      state.stop = false
-    },
     changeCheckedBoxes(state, action) {
       const { payload } = action
       const allChecked = state.boxes[0].checked
@@ -127,6 +120,6 @@ const aviaSlice = createSlice({
   },
 })
 
-export const { startTimer, stopTimer, changeCheckedBoxes, changeActiveBtns, showMoreTickets } = aviaSlice.actions
+export const { changeCheckedBoxes, changeActiveBtns, showMoreTickets } = aviaSlice.actions
 
 export default aviaSlice.reducer
