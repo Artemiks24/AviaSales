@@ -115,9 +115,9 @@ const aviaSlice = createSlice({
         state.status = false
       }
     },
-    [fetchTickets.rejected]: (state) => {
+    [fetchTickets.rejected]: (state, action) => {
       state.status = true
-      state.error = true
+      state.error = action.payload
       state.stop = !state.stop
     },
   },
