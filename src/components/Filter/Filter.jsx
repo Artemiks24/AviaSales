@@ -28,16 +28,3 @@ export default function Filter() {
     </form>
   )
 }
-
-// <div className={styles.boxes}>
-// <input type="checkbox" id="box-1" />
-// <label htmlFor="box-1">Все</label>
-// <input type="checkbox" id="box-2" defaultChecked="" />
-// <label htmlFor="box-2">Без пересадок</label>
-// <input type="checkbox" id="box-3" />
-// <label htmlFor="box-3">1 пересадка</label>
-// <input type="checkbox" id="box-4" />
-// <label htmlFor="box-4">2 пересадки</label>
-// <input type="checkbox" id="box-5" />
-// <label htmlFor="box-5">3 пересадки</label>
-// </div>

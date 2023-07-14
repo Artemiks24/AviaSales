@@ -15,7 +15,9 @@ export default function Tabs() {
       {btns.map((btn) => (
         <li key={btn.id} className={styles.tabs__item}>
           <button
-            onClick={() => dispatch(changeActiveBtns(btn.id))}
+            onClick={() => {
+              dispatch(changeActiveBtns(btn.id))
+            }}
             className={btn.active ? `${styles.active} ${styles.button}` : styles.button}
             type="button"
             aria-label="Save"

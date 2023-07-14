@@ -1,3 +1,4 @@
+/* eslint-disable no-return-assign */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 import fetchTicketsData from '../requests/requests'
@@ -29,15 +30,22 @@ const aviaSlice = createSlice({
       { id: 4, text: THREESOPS, checked: false, stops: 3 },
     ],
     btns: [
-      { id: 0, text: 'самый дешёвый', active: false },
+      { id: 0, text: 'самый дешёвый', active: true },
       { id: 1, text: 'самый быстрый', active: false },
     ],
     tickets: [],
     status: null,
     error: null,
     count: 5,
+    stop: false,
   },
   reducers: {
+    startTimer: (state) => {
+      state.stop = true
+    },
+    stopTimer: (state) => {
+      state.stop = false
+    },
     changeCheckedBoxes(state, action) {
       const { payload } = action
       const allChecked = state.boxes[0].checked
@@ -59,16 +67,14 @@ const aviaSlice = createSlice({
       }
     },
     changeActiveBtns(state, action) {
-      const { payload } = action
-
-      // eslint-disable-next-line consistent-return
       state.btns.forEach((btn) => {
-        if (btn.id === payload) {
-          btn.active = !btn.active
+        if (btn.id === action.payload) {
+          btn.active = true
         } else {
           btn.active = false
         }
-        if (btn.text === 'самый дешёвый' && btn.active) {
+
+        if (btn.text === 'самый дешёвый' && btn.active === true) {
           state.tickets.sort((a, b) => a.ticket.price - b.ticket.price)
         }
 
@@ -89,20 +95,38 @@ const aviaSlice = createSlice({
 
   extraReducers: {
     [fetchTickets.pending]: (state) => {
-      state.status = 'loading...'
-      state.error = null
+      state.status = true
+      state.error = false
     },
     [fetchTickets.fulfilled]: (state, action) => {
-      state.status = 'resolved'
-      state.tickets = action.payload.tickets.map((ticket) => ({ id: generateRandomId(), ticket }))
+      state.status = false
+      const localTickets = action.payload.tickets.map((ticket) => ({ id: generateRandomId(), ticket }))
+      const cheapBtn = state.btns.find((btn) => btn.text === 'самый дешёвый' && btn.active === true)
+      const fasterpBtn = state.btns.find((btn) => btn.text === 'самый быстрый' && btn.active === true)
+      if (cheapBtn) {
+        state.tickets = [...state.tickets, ...localTickets].sort((a, b) => a.ticket.price - b.ticket.price)
+      }
+      if (fasterpBtn) {
+        state.tickets.sort(
+          (a, b) =>
+            a.ticket.segments[0].duration +
+            a.ticket.segments[1].duration -
+            (b.ticket.segments[0].duration + b.ticket.segments[1].duration)
+        )
+      }
+
+      if (!action.payload) {
+        state.isStop = !state.isStop
+      }
     },
     [fetchTickets.rejected]: (state, action) => {
-      state.status = 'rejected'
+      state.status = true
       state.error = action.payload
+      state.isStop = !state.isStop
     },
   },
 })
 
-export const { changeCheckedBoxes, changeActiveBtns, showMoreTickets } = aviaSlice.actions
+export const { startTimer, stopTimer, changeCheckedBoxes, changeActiveBtns, showMoreTickets } = aviaSlice.actions
 
 export default aviaSlice.reducer
