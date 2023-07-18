@@ -6,10 +6,12 @@ import Header from './components/Header'
 import Tabs from './components/Tabs/Tabs'
 import Filter from './components/Filter'
 import TicketList from './components/TicketList/TicketList'
+import { selectError, selectStop } from './store/selectors'
 
 export default function App() {
   const [onlineStatus, setOnlineStatus] = useState(navigator.onLine ? 'Онлайн' : 'Офлайн')
-  const { error, stop } = useSelector((state) => state)
+  const error = useSelector(selectError)
+  const stop = useSelector(selectStop)
   const dispatch = useDispatch()
 
   useEffect(() => {
