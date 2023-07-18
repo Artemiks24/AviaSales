@@ -4,7 +4,7 @@ import { LoadingOutlined } from '@ant-design/icons'
 
 import Ticket from '../Ticket/Ticket'
 import Footer from '../Footer/Footer'
-import { selectCount, selectBoxes, selectStatus } from '../../store/selectors'
+import { selectCount, selectBoxes, selectStatus, selectTickets } from '../../store/selectors'
 
 import styles from './TicketList.module.scss'
 import { ALLSTOPS } from './consts'
@@ -17,8 +17,7 @@ export default function TicketList() {
   const count = useSelector(selectCount)
   const boxes = useSelector(selectBoxes)
   const status = useSelector(selectStatus)
-
-  const ticketList = useSelector((state) => state.tickets)
+  const ticketList = useSelector(selectTickets)
 
   const antIcon = (
     <LoadingOutlined
