@@ -1,16 +1,16 @@
-/* eslint-disable no-return-assign */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 import fetchTicketsData from '../requests/requests'
 import { ALLSTOPS, NOSTOPS, ONESTOPS, THREESOPS, TWOSTOPS } from '../components/TicketList/consts'
+
+import { selectBoxes, selectBtns, selectTickets } from './selectors'
 
 function generateRandomId() {
   const randomNumber = Math.random() * 10
   return randomNumber.toString()
 }
 
-// eslint-disable-next-line prefer-arrow-callback
-export const fetchTickets = createAsyncThunk('aviaSales/fetchaviaSales', async function (_, { rejectWithValue }) {
+export const fetchTickets = createAsyncThunk('aviaSales/fetchaviaSales', async (_, { rejectWithValue }) => {
   try {
     const tickets = await fetchTicketsData()
     return tickets
@@ -24,7 +24,7 @@ const aviaSlice = createSlice({
   initialState: {
     boxes: [
       { id: 0, text: ALLSTOPS, checked: false },
-      { id: 1, text: NOSTOPS, checked: false, stops: 0 },
+      { id: 1, text: NOSTOPS, checked: true, stops: 0 },
       { id: 2, text: ONESTOPS, checked: false, stops: 1 },
       { id: 3, text: TWOSTOPS, checked: false, stops: 2 },
       { id: 4, text: THREESOPS, checked: false, stops: 3 },
@@ -42,38 +42,40 @@ const aviaSlice = createSlice({
   reducers: {
     changeCheckedBoxes(state, action) {
       const { payload } = action
-      const allChecked = state.boxes[0].checked
+      const allChecked = selectBoxes(state)[0].checked
 
       if (payload === 0) {
-        state.boxes.forEach((box) => {
+        selectBoxes(state).forEach((box) => {
           box.checked = !allChecked
         })
       } else {
-        const currentBox = state.boxes.find((box) => box.id === payload)
+        const currentBox = selectBoxes(state).find((box) => box.id === payload)
 
         if (currentBox) {
           currentBox.checked = !currentBox.checked
         }
 
-        const otherBoxes = state.boxes.slice(1).every((box) => box.checked)
+        const otherBoxes = selectBoxes(state)
+          .slice(1)
+          .every((box) => box.checked)
 
-        state.boxes[0].checked = otherBoxes
+        selectBoxes(state)[0].checked = otherBoxes
       }
     },
     changeActiveBtns(state, action) {
-      state.btns.forEach((btn) => {
+      selectBtns(state).forEach((btn) => {
         if (btn.id === action.payload) {
           btn.active = true
         } else {
           btn.active = false
         }
 
-        if (btn.text === 'самый дешёвый' && btn.active === true) {
-          state.tickets.sort((a, b) => a.ticket.price - b.ticket.price)
+        if (btn.text === 'самый дешёвый' && btn.active) {
+          selectTickets(state).sort((a, b) => a.ticket.price - b.ticket.price)
         }
 
         if (btn.text === 'самый быстрый' && btn.active) {
-          state.tickets.sort(
+          selectTickets(state).sort(
             (a, b) =>
               a.ticket.segments[0].duration +
               a.ticket.segments[1].duration -
@@ -95,13 +97,13 @@ const aviaSlice = createSlice({
     [fetchTickets.fulfilled]: (state, action) => {
       const localTickets = action.payload.tickets.map((ticket) => ({ id: generateRandomId(), ticket }))
 
-      const cheapBtn = state.btns.find((btn) => btn.text === 'самый дешёвый' && btn.active === true)
-      const fasterpBtn = state.btns.find((btn) => btn.text === 'самый быстрый' && btn.active === true)
+      const cheapBtn = selectBtns(state).find((btn) => btn.text === 'самый дешёвый' && btn.active === true)
+      const fasterpBtn = selectBtns(state).find((btn) => btn.text === 'самый быстрый' && btn.active === true)
       if (cheapBtn) {
         state.tickets = [...state.tickets, ...localTickets].sort((a, b) => a.ticket.price - b.ticket.price)
       }
       if (fasterpBtn) {
-        state.tickets.sort(
+        selectTickets(state).sort(
           (a, b) =>
             a.ticket.segments[0].duration +
             a.ticket.segments[1].duration -

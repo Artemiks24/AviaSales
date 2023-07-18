@@ -1,13 +1,12 @@
 import { useSelector, useDispatch } from 'react-redux'
 
 import { changeActiveBtns } from '../../store/aviaSlice'
+import { selectBtns } from '../../store/selectors'
 
 import styles from './Tabs.module.scss'
 
-// import classNames from 'classnames';
-
 export default function Tabs() {
-  const btns = useSelector((state) => state.btns)
+  const btns = useSelector(selectBtns)
   const dispatch = useDispatch()
 
   return (

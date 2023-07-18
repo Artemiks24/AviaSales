@@ -17,7 +17,7 @@ export default function Ticket({ ticket }) {
     <li className={styles.ticket}>
       <div className={styles.header}>
         <span className={styles.header__price}>{`${price} P`}</span>
-        <img src={`https://pics.avs.io/99/36/${carrier}.png`} alt="banner" />
+        <img src={`https://pics.avs.io/99/36/${carrier}.png`} style={{ width: '90px', height: '35px' }} alt="banner" />
       </div>
       <div className={styles.section}>
         <div className={styles.section__container}>

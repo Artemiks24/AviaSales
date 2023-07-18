@@ -1,12 +1,12 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import { useSelector, useDispatch } from 'react-redux'
 
 import { changeCheckedBoxes } from '../../store/aviaSlice'
+import { selectBoxes } from '../../store/selectors'
 
 import styles from './Filter.module.scss'
 
 export default function Filter() {
-  const boxes = useSelector((state) => state.boxes)
+  const boxes = useSelector(selectBoxes)
   const dispatch = useDispatch()
 
   return (

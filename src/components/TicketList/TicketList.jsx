@@ -1,10 +1,10 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import { useSelector } from 'react-redux'
 import { Alert, Spin } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 
 import Ticket from '../Ticket/Ticket'
 import Footer from '../Footer/Footer'
+import { selectCount, selectBoxes, selectStatus } from '../../store/selectors'
 
 import styles from './TicketList.module.scss'
 import { ALLSTOPS } from './consts'
@@ -14,10 +14,11 @@ function checkSearsh(stops, filters) {
 }
 
 export default function TicketList() {
-  const { count, boxes, status } = useSelector((state) => state)
+  const count = useSelector(selectCount)
+  const boxes = useSelector(selectBoxes)
+  const status = useSelector(selectStatus)
 
-  // eslint-disable-next-line prefer-const
-  let ticketList = useSelector((state) => state.tickets)
+  const ticketList = useSelector((state) => state.tickets)
 
   const antIcon = (
     <LoadingOutlined
